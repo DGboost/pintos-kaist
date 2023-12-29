@@ -237,7 +237,7 @@ int sys_exec(const char *cmd_line)
     cmd_copy = palloc_get_page(0);
     if (cmd_copy == NULL)
         return -1;
-    // cmd_copy += 0x8000000000;
+
     strlcpy(cmd_copy, cmd_line, PGSIZE);
 
     // create child process
@@ -470,9 +470,7 @@ static void *sys_mmap(void *addr, size_t length, int writable, int fd, off_t off
     {
         struct page *pg = validate_usr_addr(addr);
         if (pg != NULL)
-        {
             return NULL;
-        }
     }
 
     void *file = process_get_file(fd);

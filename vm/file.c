@@ -83,8 +83,7 @@ static void file_backed_destroy(struct page *page)
     }
 }
 
-static bool
-lazy_mmap(struct page *page, void *aux)
+static bool lazy_mmap(struct page *page, void *aux)
 {
     bool success = true;
     struct mmap_aux *info = (struct mmap_aux *)aux;
@@ -159,8 +158,8 @@ void *do_mmap(void *addr, size_t length, int writable, struct file *file, off_t 
 /* Do the munmap */
 void do_munmap(void *addr)
 {
-    struct thread *curr_thread = thread_current();
-    struct page *pg = spt_find_page(&(curr_thread->spt), addr);
+    struct thread *cur_thread = thread_current();
+    struct page *pg = spt_find_page(&(cur_thread->spt), addr);
     size_t length = pg->file.length;
     struct file *file = pg->file.file;
 
@@ -168,16 +167,16 @@ void do_munmap(void *addr)
     size_t pivot = 0;
     while (pivot < length)
     {
-        pg = spt_find_page(&(curr_thread->spt), addr);
-        if (pml4_is_dirty(curr_thread->pml4, addr))
+        pg = spt_find_page(&(cur_thread->spt), addr);
+        if (pml4_is_dirty(cur_thread->pml4, addr))
         {
             lock_acquire(&filesys_lock);
             file_write_at(file, addr, pg->file.page_read_bytes, pg->file.ofs);
             lock_release(&filesys_lock);
         }
 
-        hash_delete(&(curr_thread->spt), &(pg->page_elem));
-        spt_remove_page(&curr_thread->spt, pg);
+        hash_delete(&(cur_thread->spt), &(pg->page_elem));
+        spt_remove_page(&cur_thread->spt, pg);
         vm_dealloc_page(pg);
 
         addr += PGSIZE;

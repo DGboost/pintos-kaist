@@ -56,7 +56,6 @@ bool vm_alloc_page_with_initializer(enum vm_type type, void *upage, bool writabl
 
   struct supplemental_page_table *spt = &thread_current()->spt;
 
-  // upage = upage + 0x8000000000;
   /* Check wheter the upage is already occupied or not. */
   if (spt_find_page(spt, upage) == NULL)
   {

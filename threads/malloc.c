@@ -181,14 +181,18 @@ block_size(void *block) {
    null pointer.
    A call with null OLD_BLOCK is equivalent to malloc(NEW_SIZE).
    A call with zero NEW_SIZE is equivalent to free(OLD_BLOCK). */
-void *
-realloc(void *old_block, size_t new_size) {
-    if (new_size == 0) {
+void *realloc(void *old_block, size_t new_size) 
+{
+    if (new_size == 0) 
+    {
         free(old_block);
         return NULL;
-    } else {
+    } 
+    else 
+    {
         void *new_block = malloc(new_size);
-        if (old_block != NULL && new_block != NULL) {
+        if (old_block != NULL && new_block != NULL) 
+        {
             size_t old_size = block_size(old_block);
             size_t min_size = new_size < old_size ? new_size : old_size;
             memcpy(new_block, old_block, min_size);
